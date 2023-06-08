@@ -11,7 +11,7 @@ let timerId = null;
 
 refs.startBtn.setAttribute('disabled', true);
 
-flatpickr('#datetime-picker', {
+const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
@@ -19,7 +19,9 @@ flatpickr('#datetime-picker', {
   onClose(selectedDates) {
     console.log(selectedDates[0]);
   },
-});
+};
+
+flatpickr('#datetime-picker', options);
 
 // time calculate
 function timeCalc(input) {
