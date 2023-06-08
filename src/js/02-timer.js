@@ -20,7 +20,9 @@ const options = {
     console.log(selectedDates[0]);
   },
 };
-flatpickr('#datetime-picker', options);
+
+flatpickr("#datetime-picker", options);
+
 
 // time calculate
 function timeCalc(input) {
