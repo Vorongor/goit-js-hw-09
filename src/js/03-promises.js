@@ -30,7 +30,6 @@ function onSubBtn(evt) {
   const firstDelay = parseInt(delayInput.value);
   const step = parseInt(stepInput.value);
   const amount = parseInt(amountInput.value);
-  const promises = [];
 
   for (let i = 0; i < amount; i += 1) {
     const position = i + 1;
