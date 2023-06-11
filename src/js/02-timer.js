@@ -5,7 +5,14 @@ const refs = {
   input: document.querySelector('#datetime-picker'),
   startBtn: document.querySelector('button[data-start]'),
   timer: document.querySelector('.timer'),
+ 
 };
+const timerEl = {
+  dayEl: refs.timer.querySelector('span[data-days]'),
+  hourEl: refs.timer.querySelector('span[data-hours]'),
+  minuteEl: refs.timer.querySelector('span[data-minutes]'),
+  secondEl: refs.timer.querySelector('span[data-seconds]'),
+}
 let selectedUnixTime = 0;
 let timerId = null;
 
@@ -21,8 +28,7 @@ const options = {
   },
 };
 
-flatpickr("#datetime-picker", options);
-
+flatpickr('#datetime-picker', options);
 
 // time calculate
 function timeCalc(input) {
@@ -42,47 +48,52 @@ function dateCheck(par) {
   }
 }
 function onDataSelect(input) {
-    const par = timeCalc(input);
-    dateCheck(par);
+  const par = timeCalc(input);
+  dateCheck(par);
 }
 
-
 function convertMs(unixTime) {
-    // Number of milliseconds per unit of time
-    const second = 1000;
-    const minute = second * 60;
-    const hour = minute * 60;
-    const day = hour * 24;
-  
-    // Remaining days
-    const days = pad(Math.floor(unixTime / day));
-    // Remaining hours
-    const hours = pad(Math.floor((unixTime % day) / hour));
-    // Remaining minutes
-    const minutes = pad(Math.floor(((unixTime % day) % hour) / minute));
-    // Remaining seconds
-    const seconds = pad(Math.floor((((unixTime % day) % hour) % minute) / second));
-  
-    return { days, hours, minutes, seconds };
-  }
+  // Number of milliseconds per unit of time
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
 
-function onStartBtn() {
+  // Remaining days
+  const days = pad(Math.floor(unixTime / day));
+  // Remaining hours
+  const hours = pad(Math.floor((unixTime % day) / hour));
+  // Remaining minutes
+  const minutes = pad(Math.floor(((unixTime % day) % hour) / minute));
+  // Remaining seconds
+  const seconds = pad(
+    Math.floor((((unixTime % day) % hour) % minute) / second)
+  );
+
+  return { days, hours, minutes, seconds };
+}
+
+function onStartBtn(evt) {
   timerId = setInterval(() => {
     const currentTime = Date.now();
     const timeToCount = selectedUnixTime - currentTime;
     const { days, hours, minutes, seconds } = convertMs(timeToCount);
-    refs.timer.querySelector('span[data-days]').textContent = days;
-    refs.timer.querySelector('span[data-hours]').textContent = hours;
-    refs.timer.querySelector('span[data-minutes]').textContent = minutes;
-    refs.timer.querySelector('span[data-seconds]').textContent = seconds;
+    timerEl.dayEl.textContent = pad(days, 2, "0");
+    timerEl.hourEl.textContent = pad(hours, 2, "0");
+    timerEl.minuteEl.textContent = pad(minutes, 2, "0");
+    timerEl.secondEl.textContent = pad(seconds, 2, "0");
     if (selectedUnixTime - currentTime < 5) {
       clearInterval(timerId);
-      refs.timer.querySelector('span[data-days]').textContent = 0;
-    refs.timer.querySelector('span[data-hours]').textContent = 0;
-    refs.timer.querySelector('span[data-minutes]').textContent = 0;
-    refs.timer.querySelector('span[data-seconds]').textContent = 0;
+      timerEl.dayEl.textContent = pad(0, 2, "0");
+      timerEl.hourEl.textContent = pad(0, 2, "0");
+      timerEl.minuteEl.textContent = pad(0, 2, "0");
+      timerEl.secondEl.textContent = pad(0, 2, "0");
+      refs.input.removeAttribute('disabled');
+      return;
     }
   }, 1000);
+  refs.startBtn.setAttribute('disabled', true);
+  refs.input.setAttribute('disabled', true);
 }
 
 refs.input.addEventListener('input', onDataSelect);
