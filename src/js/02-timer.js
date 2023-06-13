@@ -25,32 +25,19 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     console.log(selectedDates[0]);
+    const moment = Date.now();
+    const date = new Date(selectedDates[0]);
+   selectedUnixTime = date.getTime();
+   if (selectedUnixTime - moment <= 0) {
+    Notiflix.Notify.failure('Please choose a date in the future');
+   } else {
+    refs.startBtn.removeAttribute('disabled');
+  }
   },
 };
 
 flatpickr('#datetime-picker', options);
 
-// time calculate
-function timeCalc(input) {
-  const moment = Date.now();
-  const date = new Date(input.target.value);
-  const unixTime = date.getTime();
-  const par = unixTime - moment;
-  selectedUnixTime = unixTime;
-  return par;
-}
-// date check
-function dateCheck(par) {
-  if (par <= 0) {
-    Notiflix.Notify.failure('Please choose a date in the future');
-  } else {
-    refs.startBtn.removeAttribute('disabled');
-  }
-}
-function onDataSelect(input) {
-  const par = timeCalc(input);
-  dateCheck(par);
-}
 
 function convertMs(unixTime) {
   // Number of milliseconds per unit of time
@@ -96,5 +83,5 @@ function onStartBtn(evt) {
   refs.input.setAttribute('disabled', true);
 }
 
-refs.input.addEventListener('input', onDataSelect);
+
 refs.startBtn.addEventListener('click', onStartBtn);
